@@ -8,11 +8,14 @@ from VACon_rest.VACon import getFriendsSteamids, getPlayersBySteamids
 class FriendsList(APIView):
 	def get(self, request, steamid, format=None):
 
-		friendsSteamids = getFriendsSteamids(steamid)
-		players = getPlayersBySteamids(friendsSteamids)
-
-		response = PlayerSerializer(players, many=True)
-		return Response(response.data)
+		try:
+			friendsSteamids = getFriendsSteamids(steamid)
+			players = getPlayersBySteamids(friendsSteamids)
+			response = PlayerSerializer(players, many=True)
+			return Response(response.data)
+			
+		except Exception:
+			return HttpResponse("Invalid Steam ID")
 
 
 
