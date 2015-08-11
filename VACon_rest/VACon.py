@@ -1,17 +1,9 @@
 import sys
 import urllib.request
 import json
-
+from VACon_rest.player import Player
 
 APIKey = 'YOUR API KEY HERE'
-
-class Player():
-	def __init__(self, playerSummary):
-		self.steamid = playerSummary['steamid']		
-		self.personaname = playerSummary['personaname']
-		self.avatarfull = playerSummary['avatarfull']	
-		self.profileurl = playerSummary['profileurl']
-		self.VACBanned = False
 
 
 def getFriendsSteamids(steamid):
@@ -70,6 +62,30 @@ def getPlayersBySteamids(listOfSteamids):
 
 
 	return players
+
+def getPlayerBySteamid(steamid):
+	"""Builds and returns a List of Player objects based on the list of Steam IDs passed."""
+
+	summaryRequestString = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' + APIKey + '&steamids=' + steamid
+	bansRequestString = 'http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=' + APIKey + '&steamids=' + steamid
+
+
+	summaryResponse = urllib.request.urlopen(summaryRequestString)		
+	summaryJSON = summaryResponse.read().decode('UTF-8')
+
+	print(summaryJSON)
+	playerSummary = json.loads(summaryJSON)['response']['players'][0]	
+	player = Player(playerSummary)
+
+	bansResponse = urllib.request.urlopen(bansRequestString)
+	bansJSON = bansResponse.read().decode('UTF-8')
+	playerBan = json.loads(bansJSON)['players'][0]
+	
+	if (playerBan['VACBanned'] == True):
+		player.VACBanned = True
+
+	
+	return player
 
 
 

@@ -19,5 +19,6 @@ from VACon_rest import views
 
 urlpatterns = [
     url(r'^friendslist/(?P<steamid>[0-9]+)$', views.FriendsList.as_view(), name='FriendsList'),
+    url(r'^player/(?P<steamid>[0-9]+)$', views.Player.as_view(), name='Player'),
     url(r'^', views.Default)
 ]
